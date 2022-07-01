@@ -8,7 +8,7 @@ networks:
 services:
 
   db:
-    image: mysql:5.7
+    build: ./sql
     command: --innodb-use-native-aio=0
     container_name: mysql-db
     restart: always
@@ -24,11 +24,9 @@ services:
   app:
     build: ./node
     container_name: node-app
-    # tty: true
-    entrypoint: dockerize -wait tcp://mysql-db:3306 -timeout 20s docker-entrypoint.sh
+    tty: true
+    entrypoint: dockerize -wait tcp://mysql-db:3306 -timeout 30s docker-entrypoint.sh
     command: [ "node", "index.js" ]
-    volumes:
-      - ./node:/usr/src/app
     networks:
       - internal
     depends_on:
